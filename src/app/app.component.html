@@ -1,0 +1,7 @@
+<form [formGroup]="newForm" (submit)="onSubmit()">
+    <div class="form-group">
+        <label>Collection name<input formControlName="collectionName" class="form-control" /></label>
+    </div>
+    <app-comic-book formControlName="comicBook"></app-comic-book>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

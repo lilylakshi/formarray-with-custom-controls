@@ -1,0 +1,10 @@
+<div [formGroup]="formGroup">
+    <div class="form-group">
+        <label>Comicbook name<input formControlName="name" class="form-control" /></label>
+    </div>
+    <div formArrayName="heroes">
+        <div *ngFor="let hero of formGroup.get('heroes').controls; let i = index">
+            <app-hero [formControlName]="i"></app-hero>
+        </div>
+    </div>
+</div>
