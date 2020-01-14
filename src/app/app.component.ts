@@ -26,7 +26,7 @@ export class AppComponent {
 
   newForm: FormGroup = this.fb.group({
     collectionName: 'classics 1',
-    comicBook: [{
+    comicBook: {
       name: 'volume 1',
       heroes: [
         {
@@ -38,7 +38,7 @@ export class AppComponent {
           wealth: 'Crazy rich'
         }
       ]
-    }]
+    }
   });
 
   constructor(private fb: FormBuilder) { }
