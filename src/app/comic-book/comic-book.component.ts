@@ -15,7 +15,11 @@ import { Subscription } from 'rxjs';
 })
 export class ComicBookComponent implements OnDestroy, ControlValueAccessor {
 
-  private propagateChange = (_: any) => { };
+  constructor(private fb: FormBuilder) {
+    this.formValueSubscription = this.formGroup.valueChanges.subscribe(value => {
+      this.propagateChange(value);
+    });
+  }
   private formValueSubscription: Subscription;
 
   formGroup: FormGroup = this.fb.group({
@@ -23,11 +27,7 @@ export class ComicBookComponent implements OnDestroy, ControlValueAccessor {
     heroes: this.fb.array([])
   });
 
-  constructor(private fb: FormBuilder) {
-    this.formValueSubscription = this.formGroup.valueChanges.subscribe(value => {
-      this.propagateChange(value);
-    })
-  }
+  private propagateChange = (_: any) => { };
 
   ngOnDestroy(): void {
     this.formValueSubscription.unsubscribe();
@@ -36,7 +36,7 @@ export class ComicBookComponent implements OnDestroy, ControlValueAccessor {
   writeValue(value: any): void {
     this.formGroup.get('name').setValue(value.name);
     value.heroes.forEach(element => {
-      (<FormArray>this.formGroup.get('heroes')).push(new FormControl(element));
+      (this.formGroup.get('heroes') as FormArray).push(new FormControl(element));
     });
   }
   registerOnChange(fn: any): void {

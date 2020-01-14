@@ -15,7 +15,11 @@ import { Subscription } from 'rxjs';
 })
 export class HeroComponent implements OnDestroy, ControlValueAccessor {
 
-  private propagateChange = (_: any) => { };
+  constructor(private fb: FormBuilder) {
+    this.formValueSubscription = this.formGroup.valueChanges.subscribe(value => {
+      this.propagateChange(value);
+    });
+  }
   private formValueSubscription: Subscription;
 
   formGroup: FormGroup = this.fb.group({
@@ -23,11 +27,7 @@ export class HeroComponent implements OnDestroy, ControlValueAccessor {
     wealth: ['']
   });
 
-  constructor(private fb: FormBuilder) {
-    this.formValueSubscription = this.formGroup.valueChanges.subscribe(value => {
-      this.propagateChange(value);
-    })
-  }
+  private propagateChange = (_: any) => { };
 
   ngOnDestroy(): void {
     this.formValueSubscription.unsubscribe();
