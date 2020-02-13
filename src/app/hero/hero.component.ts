@@ -1,5 +1,13 @@
 import { Component, forwardRef, OnDestroy } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormBuilder,
+  FormGroup,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR, ValidationErrors, Validator,
+  Validators
+} from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -10,10 +18,15 @@ import { Subscription } from 'rxjs';
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => HeroComponent),
       multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => HeroComponent),
+      multi: true,
     }
   ]
 })
-export class HeroComponent implements OnDestroy, ControlValueAccessor {
+export class HeroComponent implements OnDestroy, ControlValueAccessor, Validator {
 
   constructor(private fb: FormBuilder) {
     this.formValueSubscription = this.formGroup.valueChanges.subscribe(value => {
@@ -23,11 +36,12 @@ export class HeroComponent implements OnDestroy, ControlValueAccessor {
   private formValueSubscription: Subscription;
 
   formGroup: FormGroup = this.fb.group({
-    name: [''],
-    wealth: ['']
+    name: ['', Validators.required],
+    wealth: ['', Validators.required]
   });
 
   private propagateChange = (_: any) => { };
+  private onValidatonChange = (_: any) => { };
 
   ngOnDestroy(): void {
     this.formValueSubscription.unsubscribe();
@@ -46,6 +60,16 @@ export class HeroComponent implements OnDestroy, ControlValueAccessor {
   }
   setDisabledState?(isDisabled: boolean): void {
     // is called when our custom control should be enabled/disabled
+  }
+
+  validate(control: AbstractControl): ValidationErrors {
+    const error = this.formGroup.valid ? null : {error: 'errors_present_on_hero'};
+    console.log('hero validity check', error);
+    return error;
+  }
+
+  registerOnValidatorChange?(fn: () => void): void {
+    this.onValidatonChange = fn;
   }
 
 }
